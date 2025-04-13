@@ -1,0 +1,93 @@
+import numpy as np
+import pandas as pd
+import wfdb
+import tensorflow as tf
+from tensorflow.keras import models, layers
+from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.regularizers import l2
+from tensorflow.keras.optimizers.schedules import ExponentialDecay
+import matplotlib.pyplot as plt
+
+
+n=1000 #Anzahl der Daten die für das Trainings genutzt werden soll
+
+pfad = r"C:/Users/micha/OneDrive/Desktop/ekg/ekgdaten/"
+pfad_mi_m = r"C:...." #Trainings und Validierungsdatenpfad für geschlechtergemischtes Modell
+pfad_mi_w = r"C:..." #Trainings und Validierungsdatenpfad für weiblich trainiertes Modell
+pfad_mi_alle = r"C:..." #Trainings und Validierungsdatenpfad für männlich trainiertes Modell
+
+Ya = pd.read_csv(pfad_mi_w, index_col='ecg_id')
+Ya = Ya.iloc[:n]
+
+Yami = Ya.iloc[:n,3]
+
+
+print(Yami) # Zur Kontrolle ob die richtigen Daten 
+
+sampling_rate = 100
+
+def ekg_daten_laden(Ya, sampling_rate, path):
+    data = [wfdb.rdsamp(path + f) for f in Ya.filename_lr]
+    data = np.array([signal for signal, meta in data])
+    return data
+
+X = ekg_daten_laden(Ya, sampling_rate, pfad) 
+print(X)
+
+
+def build_ekg_model(input_shape=(1000, 12)):
+    model = models.Sequential()
+
+    model.add(layers.Conv1D(filters=128, kernel_size=3, activation=None, padding='same',input_shape=input_shape))
+    model.add(layers.BatchNormalization())
+    model.add(layers.Activation('relu'))
+    model.add(layers.Dropout(0.3))
+    model.add(layers.MaxPooling1D(pool_size=2))
+
+    model.add(layers.Conv1D(filters=256, kernel_size=3, activation=None, padding='same'))
+    model.add(layers.BatchNormalization())
+    model.add(layers.Activation('relu'))
+    model.add(layers.Dropout(0.4))
+    model.add(layers.AveragePooling1D(pool_size=2))
+
+    model.add(layers.Conv1D(filters=512, kernel_size=3, activation=None, padding='same'))
+    model.add(layers.BatchNormalization())
+    model.add(layers.Activation('relu'))
+    model.add(layers.Dropout(0.6))
+    model.add(layers.GlobalAveragePooling1D())
+
+    model.add(layers.Dense(64, activation='relu'))
+    model.add(layers.Dropout(0.3))
+    model.add(layers.Dense(128, activation='relu'))
+    model.add(layers.Dropout(0.5))
+    model.add(layers.Dense(256, activation='relu', kernel_regularizer=l2(0.001)))
+    model.add(layers.Dropout(0.5))
+    model.add(layers.Dense(1, activation='linear'))  # Regression
+
+    lr_schedule = ExponentialDecay(initial_learning_rate=0.001, decay_steps=10000, decay_rate=0.9)
+    optimizer = Adam(learning_rate=lr_schedule)
+
+    model.compile(loss='mse',
+                  optimizer=optimizer,
+                  metrics=['mae'])
+    
+    return model
+
+n = len(Ya)  
+Yami = Ya.iloc[:n, 3].values  
+
+
+model = build_ekg_model(input_shape=(1000, 12))
+
+history = model.fit(X, Yami, 
+                    epochs=30, 
+                    batch_size=32, 
+                    validation_split=0.2)
+
+model.summary()
+# model.save(r"C:/Users/micha/OneDrive/Desktop/ekg/nn/nn_w_test_umge.keras")
+
+plt.plot(history.history['loss'], label='Train Loss')
+plt.plot(history.history['val_loss'], label='Validation Loss')
+plt.legend()
+plt.show()
