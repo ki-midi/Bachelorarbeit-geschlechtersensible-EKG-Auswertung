@@ -1,0 +1,72 @@
+import pandas as pd
+import numpy as np
+import tensorflow as tf
+import wfdb
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.preprocessing import LabelEncoder
+from tensorflow.keras.utils import to_categorical
+from sklearn.metrics import accuracy_score, confusion_matrix
+
+
+models = {
+    "NN_Alle": (r"C:\Users\micha\OneDrive\Desktop\ekg\nn\nn_alle_fertig.keras",
+                r"C:\Users\micha\OneDrive\Desktop\ekg\ekgdaten\ya_testdatensatz.csv"),
+    "NN_M": (r"C:\Users\micha\OneDrive\Desktop\ekg\nn\nn_m_fertig.keras",
+              r"C:\Users\micha\OneDrive\Desktop\ekg\ekgdaten\y0_testdatensatz.csv"),
+    "NN_W": (r"C:\Users\micha\OneDrive\Desktop\ekg\nn\nn_w_fertig.keras",
+              r"C:\Users\micha\OneDrive\Desktop\ekg\ekgdaten\y1_testdatensatz.csv")
+}
+
+ekg_path = r"C:/Users/micha/OneDrive/Desktop/ekg/ekgdaten/"
+
+def ekg_daten_laden(Ya, path):
+    data = [wfdb.rdsamp(path + f)[0] for f in Ya.filename_lr]
+    return np.array(data)
+
+
+results = []
+
+
+for model_name, (model_path, data_path) in models.items():
+    print(f"Lade Modell: {model_name} ...")
+    
+    model = tf.keras.models.load_model(model_path)
+    
+
+    Ya = pd.read_csv(data_path, index_col='ecg_id')
+    n = len(Ya) 
+    Ya = Ya.iloc[:n]
+
+
+    Yami = Ya.iloc[:, 3].values
+    label_encoder = LabelEncoder()
+    Yami_encoded = label_encoder.fit_transform(Yami)
+    Yami_categorical = to_categorical(Yami_encoded)
+
+    X_test = ekg_daten_laden(Ya, ekg_path)
+
+    predictions = model.predict(X_test)
+    predicted_classes = np.argmax(predictions, axis=1)
+
+    accuracy = accuracy_score(Yami_encoded, predicted_classes)
+    results.append((model_name, accuracy))
+
+    cm = confusion_matrix(Yami_encoded, predicted_classes)
+    plt.figure(figsize=(6, 4))
+    sns.heatmap(cm, annot=True, fmt="d", cmap="Blues", xticklabels=label_encoder.classes_, yticklabels=label_encoder.classes_)
+    plt.xlabel("predict Klassen")
+    plt.ylabel("real Klassen")
+    plt.show()
+
+results_df = pd.DataFrame(results, columns=["Modell", "Genauigkeit"])
+
+print(results_df)
+
+plt.figure(figsize=(12, 5))
+sns.barplot(x=results_df["Modell"], y=results_df["Genauigkeit"], palette="viridis")
+plt.ylim(0, 1)  
+plt.ylabel("Genauigkeit")
+plt.xlabel("Modell")
+plt.show()
+
