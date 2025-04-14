@@ -6,10 +6,10 @@ from tensorflow.keras import models, layers
 from tensorflow.keras.utils import to_categorical
 from sklearn.preprocessing import LabelEncoder
 
-pfad = r"C:/Users/micha/OneDrive/Desktop/ekg/ekgdaten/"
-pfad_mi_alle = r"C:/Users/micha/OneDrive/Desktop/ekg/ekgdaten/alle_werte_nn.csv"
-pfad_mi_m = r"C:/Users/micha/OneDrive/Desktop/ekg/ekgdaten/y_sex_0.csv"
-pfad_mi_w = r"C:/Users/micha/OneDrive/Desktop/ekg/ekgdaten/y_sex_1.csv"
+pfad = #Pfad für Tabelle für EKGs einlesen
+pfad_mi_alle = #Pfad für Tabelle mit gemischten Metadaten einlesen
+pfad_mi_m = #Pfad für Tabelle mit männlichen Metadaten einlesen
+pfad_mi_w = #Pfad für Tabelle mit weiblichen Metadaten einlesen
 
 
 n = 9715
