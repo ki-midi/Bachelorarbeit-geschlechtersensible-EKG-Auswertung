@@ -10,15 +10,15 @@ from sklearn.metrics import accuracy_score, confusion_matrix
 
 
 models = {
-    "NN_Alle": (r"C:\Users\micha\OneDrive\Desktop\ekg\nn\nn_alle_fertig.keras",
-                r"C:\Users\micha\OneDrive\Desktop\ekg\ekgdaten\ya_testdatensatz.csv"),
-    "NN_M": (r"C:\Users\micha\OneDrive\Desktop\ekg\nn\nn_m_fertig.keras",
-              r"C:\Users\micha\OneDrive\Desktop\ekg\ekgdaten\y0_testdatensatz.csv"),
-    "NN_W": (r"C:\Users\micha\OneDrive\Desktop\ekg\nn\nn_w_fertig.keras",
-              r"C:\Users\micha\OneDrive\Desktop\ekg\ekgdaten\y1_testdatensatz.csv")
+    "NN_Alle": (r"#Pfad für alle NN",
+                r"#Pfad für alle Testdaten"),
+    "NN_M": (r"#Pfad für Männer NN",
+              r"#Pfad für Männer Testdaten"),
+    "NN_W": (r"#Pfad für Frauen NN",
+              r"#Pfad für Frauen Testdaten"),
 }
 
-ekg_path = r"C:/Users/micha/OneDrive/Desktop/ekg/ekgdaten/"
+ekg_path = r"Pfad EKG Daten"
 
 def ekg_daten_laden(Ya, path):
     data = [wfdb.rdsamp(path + f)[0] for f in Ya.filename_lr]
