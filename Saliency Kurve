@@ -12,9 +12,9 @@ from scipy.ndimage import gaussian_filter1d
 # beispiele: Frauen MI: 21145, 21146, 21364, 21473, 21662
 # beispiele: Frauen Norm: 20104, 20010, 21792, 
 
-pfad_ekg = r"C:\Users\micha\OneDrive\Desktop\ekg\ekgdaten\records100\20000\20152_lr"
-pfad1 = r"C:\Users\micha\OneDrive\Desktop\ekg\ekgdaten\alle_werte.csv"
-pfad_model = r"C:\Users\micha\OneDrive\Desktop\ekg\nn\nn_m_fertig.keras"
+pfad_ekg = r"#Pfad spezifisches einzelnes EKG"
+pfad1 = r"#Pfad Metadaten"
+pfad_model = r"#Pfad Modell"
 
 Ya = pd.read_csv(pfad1, index_col='ecg_id')
 X = np.array([wfdb.rdsamp(pfad_ekg)[0]])
