@@ -1,0 +1,64 @@
+import wfdb
+import pandas as pd
+import numpy as np
+import tensorflow as tf
+from tensorflow.keras.models import load_model
+import matplotlib.pyplot as plt
+from sklearn.preprocessing import LabelEncoder
+from scipy.ndimage import gaussian_filter1d
+
+# beispiele: Männer MI: 20166, 20396, 20424, 
+# beispiele: Männer Norm: 20152, 20428
+# beispiele: Frauen MI: 21145, 21146, 21364, 21473, 21662
+# beispiele: Frauen Norm: 20104, 20010, 21792, 
+
+pfad_ekg = r"C:\Users\micha\OneDrive\Desktop\ekg\ekgdaten\records100\20000\20152_lr"
+pfad1 = r"C:\Users\micha\OneDrive\Desktop\ekg\ekgdaten\alle_werte.csv"
+pfad_model = r"C:\Users\micha\OneDrive\Desktop\ekg\nn\nn_m_fertig.keras"
+
+Ya = pd.read_csv(pfad1, index_col='ecg_id')
+X = np.array([wfdb.rdsamp(pfad_ekg)[0]])
+
+model = load_model(pfad_model)
+label_encoder = LabelEncoder().fit(Ya['Y_MI'])
+
+def saliency_kurve(model, X, class_idx, sigma=5):
+    X_tensor = tf.convert_to_tensor(X, dtype=tf.float32)
+    with tf.GradientTape() as tape:
+        tape.watch(X_tensor)
+        predictions = model(X_tensor)
+        tf.print("Vorhersagen", predictions)
+        loss = predictions[:, class_idx]
+        tf.print("loss", loss)
+    grads = tape.gradient(loss, X_tensor)
+    tf.print("Gradienten", grads)
+    saliency = tf.reduce_max(tf.abs(grads), axis=-1).numpy()[0]
+    tf.print("Saliency", saliency)
+    smoothed_saliency = gaussian_filter1d(saliency, sigma=sigma)
+    normalized = (smoothed_saliency - smoothed_saliency.min()) / \
+                  (smoothed_saliency.max()- smoothed_saliency.min())
+    return normalized
+
+X_sample = X[0:1]
+pred = model.predict(X_sample)[0]
+pred_class = np.argmax(pred) 
+class_name = label_encoder.classes_[pred_class]
+smoothed_saliency = saliency_kurve(model, X_sample, pred_class, sigma=3)
+lead_idx = 9
+signal = X_sample[0, :, lead_idx]
+
+plt.figure(figsize=(15, 5))
+plt.plot(signal, 'b-', linewidth=1.5)
+plt.fill_between(range(len(signal)),
+                 signal.min(),
+                 signal.max(),
+                 where=smoothed_saliency > 0.5,
+                 color='red',
+                 alpha=0.3,
+                 label='Wichtige Bereiche')
+plt.plot(smoothed_saliency * (signal.max() - signal.min()) + signal.min(),
+         'r-', alpha=0.9)
+plt.grid(True)
+plt.tight_layout()
+plt.show()
+
