@@ -1,0 +1,42 @@
+import pandas as pd
+import ast
+pfad = r"C:\Users\micha\OneDrive\Desktop\ekg\ekgdaten\ptbxl_database.csv"
+Y = pd.read_csv(pfad)
+
+
+myocardial_infarctions = ["IMI", "ASMI", "ILMI", "AMI", "ALMI", "LMI", "PMI", "IPLMI","IPMI", "INJAS", "INJAL", "INJIN", "INJLA", "INJIL"]
+
+
+df_neu = Y.iloc[:, [0, 3, 11, 26]].copy()
+
+
+df_neu['scp_codes'] = df_neu['scp_codes'].apply(lambda x: ast.literal_eval(x) if isinstance(x, str) else x)
+
+def ist_mi_100(scp_codes):
+    if not isinstance(scp_codes, dict):
+        return False
+    return any(key in myocardial_infarctions and value == 100.0 for key, value in scp_codes.items())
+
+def ist_norm_100(scp_codes):
+    if not isinstance(scp_codes, dict):
+        return False
+    return scp_codes.get("NORM") == 100.0
+
+# sex == 0
+df_filtered = df_neu[df_neu['sex'] == 0].copy()
+
+df_filtered = df_neu.copy()
+
+df_filtered = df_filtered[
+    (df_filtered['scp_codes'].apply(ist_mi_100) & ~df_filtered['scp_codes'].apply(ist_norm_100)) |
+    (~df_filtered['scp_codes'].apply(ist_mi_100) & df_filtered['scp_codes'].apply(ist_norm_100))
+]
+
+df_filtered['Y_MI'] = df_filtered['scp_codes'].apply(lambda scp: 1 if ist_mi_100(scp) else 0)
+
+
+df_filtered.to_csv(r'G:\Meine Ablage\EKG\ekglisten\alle01.csv', index=False)
+
+# Vorschau
+print("Gefilterte Tabelle mit Y_MI-Spalte:")
+print(df_filtered.head())
