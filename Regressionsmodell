@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 
 n=1000 #Anzahl der Daten die für das Trainings genutzt werden soll
 
-pfad = r"C:/Users/micha/OneDrive/Desktop/ekg/ekgdaten/"
+pfad = r"#Pfad EKG Daten"
 pfad_mi_m = r"C:...." #Trainings und Validierungsdatenpfad für geschlechtergemischtes Modell
 pfad_mi_w = r"C:..." #Trainings und Validierungsdatenpfad für weiblich trainiertes Modell
 pfad_mi_alle = r"C:..." #Trainings und Validierungsdatenpfad für männlich trainiertes Modell
