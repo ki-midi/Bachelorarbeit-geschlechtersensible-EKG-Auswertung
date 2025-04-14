@@ -1,0 +1,40 @@
+import pandas as pd
+import ast  
+
+pfad = r"C:\Users\micha\OneDrive\Desktop\ekg\ekgdaten\ptbxl_database.csv"
+Y = pd.read_csv(pfad)
+
+MI = [
+    "IMI", "ASMI", "ILMI", "AMI", "ALMI", "LMI", "PMI", "IPLMI", "IPMI", "INJAS", "INJAL","INJIN", "INJLA", "INJIL"
+]
+
+df_neu = Y.iloc[:, [0, 3, 11, 26]].copy()  # ecg_id, sex, scp_code, und filename als Extrahiere spalten
+
+df_neu['scp_codes'] = df_neu['scp_codes'].apply(lambda x: ast.literal_eval(x) if isinstance(x, str) else x)
+
+def berechne_y_mi(scp_codes):
+    if isinstance(scp_codes, dict):
+        for key, value in scp_codes.items():
+            if key in MI and value in [15.0, 35.0, 50.0, 80.0 ,100.0]:  
+                return (value * 1) / 100 
+    return 0 
+
+
+df_neu['Y_MI'] = df_neu['scp_codes'].apply(berechne_y_mi)
+
+df_y_mi_1 = df_neu[df_neu['sex'] == 1]
+
+df_y_mi_0 = df_neu[df_neu['sex'] == 0]
+
+df_all = df_neu.copy()
+
+
+df_y_mi_1.to_csv(r'G:\Meine Ablage\EKG\ekglisten/y_1_mikomplett_01.csv', index=False)
+# df_y_mi_0.to_csv(r'G:\Meine Ablage\EKG\ekglisten\y_0_mikomplet.csv', index=False)
+# df_all.to_csv(r"C:/Users/micha/OneDrive/Desktop/ekg/ekgdaten/alle_werte.csv", index=False)
+
+print(df_y_mi_1.head())
+
+print(df_y_mi_0.head())
+
+print(df_all.head())
