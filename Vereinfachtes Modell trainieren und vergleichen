@@ -11,13 +11,13 @@ from sklearn.metrics import accuracy_score, confusion_matrix
 from tensorflow.keras import layers, models
 
 pfade = {
-    "alle": r"G:\Meine Ablage\EKG\ekglisten\alle01.csv",
-    "männer": r"G:\Meine Ablage\EKG\ekglisten\männer01.csv",
-    "frauen": r"G:\Meine Ablage\EKG\ekglisten\frauen01.csv"
+    "alle": r"#Pfad Metadaten alle",
+    "männer": r"Pfad Metadaten männer",
+    "frauen": r"Pfad Metadaten frauen.csv"
 }
 
-ekg_path = r"C:/Users/micha/OneDrive/Desktop/ekg/ekgdaten/"
-output_path = r"G:\Meine Ablage\EKG\ekglisten"
+ekg_path = r"#Pfad mit EKG Daten"
+output_path = r"#SPeicherpfad"
 
 def ekg_daten_laden(df, path):
     return np.array([wfdb.rdsamp(path + f)[0] for f in df["filename_lr"]])
