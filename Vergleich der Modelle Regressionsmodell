@@ -7,15 +7,15 @@ import seaborn as sns
 from sklearn.metrics import mean_absolute_error
 
 models = {
-    "NN_Alle": (r"C:\Users\micha\OneDrive\Desktop\ekg\nn\nn_a_fertig_reg.keras", 
-                r"C:\Users\micha\OneDrive\Desktop\ekg\ekgdaten\ya_testdatensatz.csv"),
-    "NN_M": (r"C:\Users\micha\OneDrive\Desktop\ekg\nn\nn_m_fertig_reg.keras", 
-             r"C:\Users\micha\OneDrive\Desktop\ekg\ekgdaten\y0_testdatensatz.csv"),
-    "NN_W": (r"C:\Users\micha\OneDrive\Desktop\ekg\nn\nn_w_fertig_reg.keras", 
-             r"C:\Users\micha\OneDrive\Desktop\ekg\ekgdaten\y1_testdatensatz.csv")
+    "NN_Alle": (r"C:Keras Modell alle", 
+                r"C:Testdatentabelle alle"),
+    "NN_M": (r"C:Keras Modell männer", 
+                r"C:Testdatentabelle männer"),
+    "NN_W": (r"C:Keras Modell frauen", 
+                r"C:Testdatentabelle frauen")
 }
 
-ekg_path = r"C:/Users/micha/OneDrive/Desktop/ekg/ekgdaten/"
+ekg_path = r"#Pfad zu den EKGs"
 
 def ekg_daten_laden(Ya, path):
     data = [wfdb.rdsamp(path + f)[0] for f in Ya.filename_lr]
