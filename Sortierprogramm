@@ -1,7 +1,7 @@
 import pandas as pd
 import ast  
 
-pfad = r"C:\Users\micha\OneDrive\Desktop\ekg\ekgdaten\ptbxl_database.csv"
+pfad = r"#Pfad Metadatentabelle"
 Y = pd.read_csv(pfad)
 
 MI = [
@@ -29,9 +29,9 @@ df_y_mi_0 = df_neu[df_neu['sex'] == 0]
 df_all = df_neu.copy()
 
 
-df_y_mi_1.to_csv(r'G:\Meine Ablage\EKG\ekglisten/y_1_mikomplett_01.csv', index=False)
-# df_y_mi_0.to_csv(r'G:\Meine Ablage\EKG\ekglisten\y_0_mikomplet.csv', index=False)
-# df_all.to_csv(r"C:/Users/micha/OneDrive/Desktop/ekg/ekgdaten/alle_werte.csv", index=False)
+df_y_mi_1.to_csv(r'#Speicherpfad', index=False)
+# df_y_mi_0.to_csv(r'#Speicherpfad', index=False)
+# df_all.to_csv(r"#SPeicherpfad", index=False)
 
 print(df_y_mi_1.head())
 
