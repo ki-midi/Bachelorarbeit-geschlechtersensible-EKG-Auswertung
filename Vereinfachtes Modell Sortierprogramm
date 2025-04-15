@@ -1,6 +1,6 @@
 import pandas as pd
 import ast
-pfad = r"C:\Users\micha\OneDrive\Desktop\ekg\ekgdaten\ptbxl_database.csv"
+pfad = r"#Pfad Metadaten Tabelle "
 Y = pd.read_csv(pfad)
 
 
@@ -35,7 +35,7 @@ df_filtered = df_filtered[
 df_filtered['Y_MI'] = df_filtered['scp_codes'].apply(lambda scp: 1 if ist_mi_100(scp) else 0)
 
 
-df_filtered.to_csv(r'G:\Meine Ablage\EKG\ekglisten\alle01.csv', index=False)
+df_filtered.to_csv(r'Speicherpfad', index=False)
 
 # Vorschau
 print("Gefilterte Tabelle mit Y_MI-Spalte:")
