@@ -13,7 +13,7 @@ def ekg_daten_laden(pfade):
     data = [wfdb.rdsamp(pfad)]
     return data
 
-pfade=r"C:\Users\micha\OneDrive\Desktop\ekg\ekgdaten\records100\00000\00002_lr"
+pfade=r"C:Spezifischer Pfad zum EKG"
 Xzeigen = ekg_daten_laden(pfade)
     
 print(Xzeigen)
