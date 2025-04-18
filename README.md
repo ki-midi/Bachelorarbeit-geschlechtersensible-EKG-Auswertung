@@ -26,3 +26,5 @@ Für die in der Arbeit erläuterte vereinfachte Modellvariante steht ein separat
 
 Im Gegensatz zur vollständigen Modellvariante erfolgen Training, Validierung und Test des vereinfachten Modells innerhalb desselben Programms. Dadurch wird der gesamte Analyseprozess für diese Variante zentralisiert und vereinfacht.
 
+Zur grafischen Darstellung der EKG-Daten steht ein separates Visualisierungsprogramm zur Verfügung. Dieses ermöglicht die Darstellung einzelner EKG-Signale aus den Datensätzen und dient der qualitativen Kontrolle sowie der Veranschaulichung der Eingangsdaten für die Modellierung.
+
