@@ -1,0 +1,113 @@
+import numpy as np
+import pandas as pd
+import wfdb
+import os
+import matplotlib.pyplot as plt
+from sklearn.model_selection import KFold
+from sklearn.metrics import mean_absolute_error
+from tensorflow.keras import models, layers
+from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.regularizers import l2
+from tensorflow.keras.optimizers.schedules import ExponentialDecay
+
+
+n = 1000 
+n_folds = 5
+epochs = 10
+batch_size = 32
+
+
+pfad = 
+pfad_mi_m = 
+pfad_mi_w = 
+pfad_mi_alle = 
+model_save_path = 
+
+
+def ekg_daten_laden(Ya, path):
+    data = [wfdb.rdsamp(path + f) for f in Ya.filename_lr]
+    data = np.array([signal for signal, meta in data])
+    return data
+
+
+def erstell_ekg_model(input_shape=(1000, 12)):
+    model = models.Sequential()
+
+    model.add(layers.Conv1D(filters=128, kernel_size=3, activation=None, padding='same',input_shape=input_shape))
+    model.add(layers.BatchNormalization())
+    model.add(layers.Activation('relu'))
+    model.add(layers.Dropout(0.3))
+    model.add(layers.MaxPooling1D(pool_size=2))
+
+    model.add(layers.Conv1D(filters=256, kernel_size=3, activation=None, padding='same'))
+    model.add(layers.BatchNormalization())
+    model.add(layers.Activation('relu'))
+    model.add(layers.Dropout(0.4))
+    model.add(layers.AveragePooling1D(pool_size=2))
+
+    model.add(layers.Conv1D(filters=512, kernel_size=3, activation=None, padding='same'))
+    model.add(layers.BatchNormalization())
+    model.add(layers.Activation('relu'))
+    model.add(layers.Dropout(0.6))
+    model.add(layers.GlobalAveragePooling1D())
+
+    model.add(layers.Dense(64, activation='relu'))
+    model.add(layers.Dropout(0.3))
+    model.add(layers.Dense(128, activation='relu'))
+    model.add(layers.Dropout(0.5))
+    model.add(layers.Dense(256, activation='relu', kernel_regularizer=l2(0.001)))
+    model.add(layers.Dropout(0.5))
+    model.add(layers.Dense(1, activation='linear'))  # Regression
+
+    lr_schedule = ExponentialDecay(initial_learning_rate=0.001, decay_steps=10000, decay_rate=0.9)
+    optimizer = Adam(learning_rate=lr_schedule)
+
+    model.compile(loss='mse',
+                  optimizer=optimizer,
+                  metrics=['mae'])
+    
+    return model
+
+
+Ya = pd.read_csv(pfad_mi_w, index_col='ecg_id')
+Ya = Ya.iloc[:n]
+Yami = Ya.iloc[:, 3].values
+X = ekg_daten_laden(Ya, pfad)
+
+kf = KFold(n_splits=n_folds, shuffle=True, random_state=42)
+fold = 1
+mae_scores = []
+
+
+for train_index, val_index in kf.split(X):
+
+    X_train, X_val = X[train_index], X[val_index]
+    y_train, y_val = Yami[train_index], Yami[val_index]
+
+    model = erstell_ekg_model(input_shape=(1000, 12))
+
+    history = model.fit(X_train, y_train,
+                        epochs=epochs,
+                        batch_size=batch_size,
+                        validation_data=(X_val, y_val),
+                        verbose=1)
+
+    model_path = os.path.join(model_save_path, f"nn_w_val_reg{fold}.keras")
+    model.save(model_path)
+
+    y_val_pred = model.predict(X_val)
+    fold_mae = mean_absolute_error(y_val, y_val_pred)
+    mae_scores.append(fold_mae)
+
+
+    plt.figure()
+    plt.plot(history.history['loss'], label='Train Loss')
+    plt.plot(history.history['val_loss'], label='Validation Loss')
+    plt.legend()
+    plt.tight_layout()
+    plt.show()
+
+    fold += 1
+
+
+print(mae_scores)
