@@ -11,10 +11,10 @@ from tensorflow.keras.regularizers import l2
 from tensorflow.keras.optimizers.schedules import ExponentialDecay
 
 
-n = 1000 
-n_folds = 5
-epochs = 10
-batch_size = 32
+n = #Anzahl an Daten pro Programm, in diesem fall 9715
+n_folds = anzahl der Programme die erstellt werden sollen
+epochs = Anzahl der Durchläufe des gesamten Datensatzes
+
 
 
 pfad = r"#Pfad EKG Daten"
@@ -85,6 +85,7 @@ for train_index, val_index in kf.split(X):
     y_train, y_val = Yami[train_index], Yami[val_index]
 
     model = erstell_ekg_model(input_shape=(1000, 12))
+    batch_size = 32
 
     history = model.fit(X_train, y_train,
                         epochs=epochs,
