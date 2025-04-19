@@ -17,11 +17,11 @@ epochs = 10
 batch_size = 32
 
 
-pfad = 
-pfad_mi_m = 
-pfad_mi_w = 
-pfad_mi_alle = 
-model_save_path = 
+pfad = r"#Pfad EKG Daten"
+pfad_mi_m = r"C:...." #Trainings und Validierungsdatenpfad für geschlechtergemischtes Modell
+pfad_mi_w = r"C:..." #Trainings und Validierungsdatenpfad für weiblich trainiertes Modell
+pfad_mi_alle = r"C:..." #Trainings und Validierungsdatenpfad für männlich trainiertes Modell
+model_speicher_path = #Speicherpfad einfügen
 
 
 def ekg_daten_laden(Ya, path):
@@ -92,7 +92,7 @@ for train_index, val_index in kf.split(X):
                         validation_data=(X_val, y_val),
                         verbose=1)
 
-    model_path = os.path.join(model_save_path, f"nn_w_val_reg{fold}.keras")
+    model_path = os.path.join(model_speicher_path, f"nn_w_val_reg{fold}.keras")
     model.save(model_path)
 
     y_val_pred = model.predict(X_val)
