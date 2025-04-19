@@ -25,6 +25,8 @@ Im Gegensatz zur vollständigen Modellvariante erfolgen Training, Validierung un
 
 Zur grafischen Darstellung der EKG-Daten steht ein separates Visualisierungsprogramm zur Verfügung. Dieses ermöglicht die Darstellung einzelner EKG-Signale aus den Datensätzen.
 
+Mit dem Code Saliency Kurve können die Saliency Kurven der einzelnen EKGs erzeugt werden.
+
 Mit der Ergänzung AUC und F1 wurde zu der bestehenden Accuracy auch noch AUC und F1 berechnet für das Klassifikationsmodell.
 
-Mit dem Programm Crossvalidation können beliebig viele Programme erstellt werden jeweils mit einer anderen Durchmischung  der Trainings und Validierungsdaten. mit derm Crossvalidation Testdatensatz können dann die Programme mit dem Testdatensatz getestet werden.
+Mit dem Programm Crossvalidation können beliebig viele Programme erstellt werden jeweils mit einer anderen Durchmischung  der Trainings und Validierungsdaten. Mit dem Programm Crossvalidation Testdatensatz können dann die unterschiedlichen Modelle, die vorher mit dem Crossvalidation Code erzeugt wurden, mit dem Testdatensatz getestet werden.
