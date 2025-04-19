@@ -28,3 +28,4 @@ Im Gegensatz zur vollständigen Modellvariante erfolgen Training, Validierung un
 
 Zur grafischen Darstellung der EKG-Daten steht ein separates Visualisierungsprogramm zur Verfügung. Dieses ermöglicht die Darstellung einzelner EKG-Signale aus den Datensätzen und dient der qualitativen Kontrolle sowie der Veranschaulichung der Eingangsdaten für die Modellierung.
 
+Mit der Ergänzung AUC und F1 wurde zu der bestehenden Accuracy auch noch AUC und F1 berechnet für das Klassifikationsmodell.
