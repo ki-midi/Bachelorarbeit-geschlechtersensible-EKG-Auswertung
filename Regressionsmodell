@@ -85,7 +85,7 @@ history = model.fit(X, Yami,
                     validation_split=0.2)
 
 model.summary()
-# model.save(r"C:/Users/micha/OneDrive/Desktop/ekg/nn/nn_w_test_umge.keras")
+# model.save(#Pfad einfügen)
 
 plt.plot(history.history['loss'], label='Train Loss')
 plt.plot(history.history['val_loss'], label='Validation Loss')
